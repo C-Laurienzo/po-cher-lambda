@@ -30,18 +30,20 @@ export const handler = async (event) => {
     let statusCode, body;
 
     if (response.ChallengeName) {
+      const { ChallengeName, ChallengeParameters, Session } = response;
+
       statusCode = 202;
       body = JSON.stringify({
-        ChallengeName: response.ChallengeName,
-        ChallengeParameters: {
-          ...response?.ChallengeParameters
-        },
-        Session: response.Session
+        ChallengeName,
+        ChallengeParameters,
+        Session
       });
     }
     else {
+      const { AuthenticationResult } = response;
+      
       statusCode = 201;
-      body = JSON.stringify(response?.AuthenticationResult)
+      body = JSON.stringify(AuthenticationResult)
     }
 
     return {
@@ -50,7 +52,7 @@ export const handler = async (event) => {
     };
   }
 
-  const onError = (error) => {
+  const onError = () => {
     return {
       statusCode: 401,
       body: JSON.stringify("Incorrect username or password.")
