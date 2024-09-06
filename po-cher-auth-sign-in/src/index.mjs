@@ -6,8 +6,14 @@ const clientId = process.env.CLIENT_ID;
 const cognito = new CognitoIdentityProviderClient({ region: process.env.REGION });
 
 export const handler = async (event) => {
-  const username = event["username"];
-  const password = event["password"];
+  const eventBody = JSON.parse(event?.body)
+  const username = eventBody?.email ?? eventBody?.phoneNumber;
+  const password = eventBody?.password;
+  const headers = {
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Origin": "https://www.po-cher.com",
+      "Access-Control-Allow-Methods": "OPTIONS,POST"
+    }
 
   const getSecretHash = () => {
     const hasher = createHmac("sha256", clientSecret);
@@ -41,12 +47,13 @@ export const handler = async (event) => {
     }
     else {
       const { AuthenticationResult } = response;
-      
+
       statusCode = 201;
       body = JSON.stringify(AuthenticationResult)
     }
 
     return {
+      headers,
       statusCode,
       body
     };
@@ -54,8 +61,9 @@ export const handler = async (event) => {
 
   const onError = () => {
     return {
+      headers,
       statusCode: 401,
-      body: JSON.stringify("Incorrect username or password.")
+      body: JSON.stringify(`Incorrect username or password.`)
     };
   }
 
