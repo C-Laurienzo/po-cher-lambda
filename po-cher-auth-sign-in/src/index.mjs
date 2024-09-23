@@ -10,10 +10,10 @@ export const handler = async (event) => {
   const username = eventBody?.email ?? eventBody?.phoneNumber;
   const password = eventBody?.password;
   const headers = {
-      "Access-Control-Allow-Headers": "Content-Type",
-      "Access-Control-Allow-Origin": "https://www.po-cher.com",
-      "Access-Control-Allow-Methods": "OPTIONS,POST"
-    }
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "https://www.po-cher.com",
+    "Access-Control-Allow-Methods": "OPTIONS,POST"
+  }
 
   const getSecretHash = () => {
     const hasher = createHmac("sha256", clientSecret);
@@ -44,8 +44,7 @@ export const handler = async (event) => {
         ChallengeParameters,
         Session
       });
-    }
-    else {
+    } else {
       const { AuthenticationResult } = response;
 
       statusCode = 201;
